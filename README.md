@@ -1,63 +1,195 @@
-ResourceOps Tracker
+# ResourceOps Tracker
 
-A personal project that simulates the daily work of a Resource Management support team: scheduling practitioners for client-site stock counts, keeping trackers accurate, catching errors, and chasing mandatory training. Built in Excel with a Python exceptions report on top.
+> An Excel-based Resource Management operations tracker with automated exception detection and a Python reporting layer.
+
+ResourceOps Tracker is a personal project that simulates the day-to-day work of a Resource Management support team. It is designed to track practitioners, client-site stock-count requests, scheduling, leave, mandatory training, staffing requirements, and operational exceptions.
+
+The project combines **Microsoft Excel** for day-to-day tracking and dashboard reporting with **Python** for independent validation and weekly exception reporting.
+
+## Dashboard
+
+![ResourceOps Dashboard](Dashboard.png)
+
+The dashboard provides visibility into:
+
+- Total requests and request status
+- SLA performance
+- Understaffed requests
+- Double-booked practitioners
+- Leave clashes
+- Training compliance
+- Overdue training
+- Weekend staff availability
+- Staffing gaps by region
+
+## What It Does
+
+- Tracks practitioners, requests, schedules, leave, and mandatory training
+- Automatically flags double-bookings
+- Detects practitioners scheduled during approved leave
+- Identifies understaffed requests
+- Calculates SLA ageing using working days
+- Flags overdue mandatory training for follow-up
+- Provides regional staffing-gap analysis
+- Displays key operational metrics on a single dashboard
+- Generates a weekly exceptions report using Python
+- Validates Excel results independently through Python
+
+## Workbook Structure
+
+The workbook contains six sheets:
 
 
-What it does
-Tracks practitioners, stock-count requests, schedule, leave and mandatory training
-Automatically flags double-bookings, people scheduled during leave, and understaffed requests
-Tracks SLA ageing (target: 5 working days from receipt to closure)
-Lists employees who need chasing for overdue training
-Shows everything on a one-screen dashboard
-Produces a weekly exceptions report with a Python script
-Files
-File	Purpose
-data/ResourceOps_Tracker.xlsx	The Excel workbook (6 sheets, 5 tables, dashboard)
-data/planted_errors_answer_key.csv	The 7 errors deliberately planted in the data, used to test the checks
-data/Monday_Exceptions_Report_<date>.xlsx	Output of the report script
-scripts/generate_data.py	Generates the synthetic data and plants 7 known errors
-scripts/exceptions_report.py	Re-runs every check in Python and writes the weekly report
-Workbook structure
+ResourceOps_Tracker.xlsx
+│
+├── Practitioners
+├── Requests
+├── Schedule
+├── Leave
+├── Training
+└── Dashboard
 
-Tables are linked by IDs, never by names: PractID links Practitioners, Schedule, Leave and Training; RequestID links Requests and Schedule.
+The tables are linked using IDs rather than names:
 
-Check	Where	Logic
-Double-booking	Schedule[DoubleBooked]	Same PractID and Date appears more than once
-Leave clash	Schedule[LeaveClash]	Date falls between LeaveStart and LeaveEnd for the same person
-Staffing gap	Requests[StaffGap]	PeopleNeeded minus people scheduled; Open requests shown as PENDING
-SLA ageing	Requests[SLADays]	Working days from DateReceived to DateClosed (or today)
-Training chase	Training[ChaseFlag]	Not completed and due date passed
+PractID
+   │
+   ├── Practitioners
+   ├── Schedule
+   ├── Leave
+   └── Training
 
-Dropdown validation on Region, Grade, Status, WeekendAvailable and LeaveType prevents typos from breaking the formulas.
+RequestID
+   │
+   ├── Requests
+   └── Schedule
 
-How to use (weekly routine)
-Add or update rows in the relevant table. New rows join the table automatically.
-Use dropdowns for status fields. Use IDs, not names, to link records.
-Check the Dashboard: any red number above zero needs action.
-Download the workbook into data/.
-Run python scripts/exceptions_report.py "data/ResourceOps_Tracker.xlsx" and send the report to the Resource Managers.
-Results
-7 of 7 planted errors detected (3 double-bookings, 2 leave clashes, 2 understaffed requests), with 0 false positives, in both Excel and Python.
-Excel and Python summaries matched on all six metrics.
-Test on 3 new errors added to a copy of the workbook: the Python script caught 3 of 3.
-11 of 14 closed requests met the 5-working-day SLA (78.6%); 8 training enrolments flagged for chasing.
-What I learned
-Linking tables by IDs instead of names prevents most lookup errors.
-Checking the same logic in two tools (Excel and Python) catches mistakes in either one.
-A script that works on clean data can break when someone adds columns to the source file; selecting only the needed columns fixed it.
-Setup
+
+
+# Testing & Validation
+
+--->The project includes deliberately planted errors to test the exception logic.
+
+# Validation results
+7 of 7 planted error scenarios detected
+0 false positives in the validation test
+Excel and Python summaries matched across the tracked metrics
+An additional test using 3 newly introduced errors resulted in 3 of 3 errors detected
+
+# The sample dataset also demonstrates:
+
+14 closed requests
+78.6% closed within the 5-working-day SLA
+8 training records requiring follow-up
+
+The dashboard may display affected rows/records, while the planted-error test counts distinct scenarios. The answer-key CSV provides the ground truth used for validation.
+
+# What I Learned
+Data quality matters as much as reporting
+
+A dashboard is only as reliable as the data behind it. Using IDs, controlled fields and validation rules helps reduce avoidable data-quality issues.
+
+Independent validation improves confidence
+
+Implementing the same business rules in Excel and Python makes it possible to compare outputs and identify discrepancies.
+
+Automation needs to handle change
+
+A reporting script can fail when the structure of a source workbook changes. Selecting only the required columns rather than relying on an exact fixed structure makes the process more robust.
+
+Simple tools can support real operational workflows
+
+Excel can support effective operational tracking when tables, validation, formulas, conditional formatting and dashboards are combined with clear data structures and repeatable processes.
+
+# Weekly Workflow
+
+1. Update the tracker
+
+Add or update records directly in the relevant Excel Table.
+
+2. Maintain IDs
+
+Use PractID and RequestID consistently when linking records.
+
+3. Review the Dashboard
+
+Check the KPI section and investigate exception values requiring action.
+
+4. Run the Python validation
+
+python scripts/exceptions_report.py "data/ResourceOps_Tracker.xlsx"
+
+5. Review the exceptions report
+
+Use the generated report as a weekly action list for Resource Managers.
+
+
+
+
+# What I Learned
+
+Data quality matters as much as reporting
+
+----> A dashboard is only as reliable as the data behind it. Using IDs, controlled fields and validation rules helps reduce avoidable data-quality issues.
+
+Independent validation improves confidence
+
+Implementing the same business rules in Excel and Python makes it possible to compare outputs and identify discrepancies.
+
+Automation needs to handle change
+
+A reporting script can fail when the structure of a source workbook changes. Selecting only the required columns rather than relying on an exact fixed structure makes the process more robust.
+
+Simple tools can support real operational workflows
+
+Excel can support effective operational tracking when tables, validation, formulas, conditional formatting and dashboards are combined with clear data structures and repeatable processes.
+
+# Assumptions & Limitations
+
+---> This project is a simulation designed to demonstrate operational tracking, data-quality controls and reporting.
+
+Current assumptions include:
+
+SLA target is 5 working days from request receipt to closure
+Public holidays are not excluded from working-day calculations
+Schedule records represent single-day assignments
+Multi-day assignments are not currently modelled
+All data is synthetic
+Production resource-management systems would normally include more advanced capacity planning, forecasting and optimisation
+
+
+# Technology Stack
+
+Microsoft Excel
+Excel Tables
+Structured references
+COUNTIFS
+SUMIFS
+FILTER
+NETWORKDAYS
+Data validation
+Conditional formatting
+Charts
+Python
+pandas
+openpyxl
+Faker
+Version Control
+Git
+GitHub
+
+# Setup
+
+#Install the required Python packages:
 pip install pandas faker openpyxl
-python scripts/generate_data.py
-python scripts/exceptions_report.py
-Data protection note
 
-Real versions of these trackers hold personal data. In practice: share only with people who need it, use employee IDs rather than names where possible, avoid personal email or unsecured copies, and follow the organisation's data protection policy.
+# Generate the synthetic dataset:
+--> python scripts/generate_data.py
 
-Assumptions and limitations
-The 5-working-day SLA is my own assumption; real targets would come from the team.
-Public holidays are not excluded from working-day counts.
-Schedule records are single-day; multi-day assignments are not modelled.
-Scheduling and forecasting tools used in industry are more complex; this project demonstrates the underlying checks and tracker discipline.
-Tools
 
-Microsoft Excel (Tables, COUNTIFS, SUMIFS, FILTER, NETWORKDAYS, data validation, conditional formatting, charts), Python (pandas, openpyxl, Faker), GitHub.
+# Project Purpose
+
+--> This project demonstrates practical skills in:
+
+Resource Operations · Data Quality · Excel Automation · Exception Management · Operational Reporting · Python Automation · Data Validation
+
+The focus is on building a reliable operational tracker that can identify exceptions, support scheduling decisions, monitor compliance, and produce repeatable management reporting.
