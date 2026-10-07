@@ -1,0 +1,8 @@
+ErrorType,Detail
+DOUBLE_BOOKING,P033 on 26-Sep-2026 in R001 and R011
+DOUBLE_BOOKING,P001 on 05-Dec-2026 in R002 and R018
+DOUBLE_BOOKING,P012 on 03-Oct-2026 in R003 and R015
+LEAVE_CLASH,P006 scheduled 05-Dec-2026 in R018 during leave
+LEAVE_CLASH,P030 scheduled 24-Oct-2026 in R014 during leave
+UNDERSTAFFED,R023 is short by 1 person
+UNDERSTAFFED,R018 is short by 1 person
